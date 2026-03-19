@@ -54,17 +54,20 @@ A free API that provides:
 
 ## Installation & Setup
 
-### 1. Clone the repository
+1. Clone the repository
 ```bash
 git clone https://github.com/erlyx-12345/API_Quest.git
 cd api-quest
+```
 
-### 2. Install dependencies
+2. Install dependencies
+```bash
 npm install
-
-### 3. Start the app
+```
+3. Start the app
+```bash
 npx expo start
-
+```
 ---
 
 ## Run the App
