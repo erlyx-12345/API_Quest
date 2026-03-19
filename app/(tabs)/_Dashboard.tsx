@@ -168,6 +168,7 @@ export default function Dashboard({
             onChangeText={onSearchQueryChange}
             returnKeyType="search"
             onSubmitEditing={onHandleSearch}
+            underlineColorAndroid="transparent"  
           />
 
           {searchQuery.length > 0 && (
@@ -354,14 +355,12 @@ export default function Dashboard({
           </ScrollView>
 
           <View style={styles.sectionHeaderRow}>
-            <Text style={styles.sectionTitle}>
-              {categoryFilter === 'All'
-                ? 'All recipes': `${categoryFilter} recipes`}
-            </Text>
-            <Text style={styles.sectionSubtitle}>
-              {filteredMeals.length} recipes matched
-            </Text>
-          </View>
+  <Text style={styles.sectionTitle}>
+    {categoryFilter === 'All'
+      ? 'All Recipes'
+      : `${categoryFilter} Recipes`}
+  </Text>
+</View>
 
           {loading ? (
             <View style={styles.statusContainer}>

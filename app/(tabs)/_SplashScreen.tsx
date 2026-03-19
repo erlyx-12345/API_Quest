@@ -14,7 +14,7 @@ export const SplashScreen = ({ isAppReady, view, onContinue }: SplashScreenProps
       <ImageBackground source={{ uri: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1400&q=80' }} style={styles.fullScreen}>
         <View style={styles.introOverlay} />
         <View style={styles.splashScreenContainer}>
-          <Text style={styles.splashTitle}>Cook Like a Chef</Text>
+          <Text style={styles.splashTitle}>Dish Deluxe</Text>
           <Text style={styles.splashSubtitle}>Delicious meals are waiting for you</Text>
           <ActivityIndicator size="large" color="#F58C00" style={{ marginTop: 30 }} />
         </View>

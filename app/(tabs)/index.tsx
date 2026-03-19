@@ -32,6 +32,8 @@ export default function App() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const loadMeals = async (query = '') => {
+    if (loading) return;
+
     setLoading(true);
     setError(null);
 
@@ -80,15 +82,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      loadMeals(searchQuery);
-      setView('dashboard');
-    }, 450);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  useEffect(() => {
     if (Platform.OS !== 'android') return;
 
     const onBackPress = () => {
@@ -101,7 +94,6 @@ export default function App() {
       }
 
       if (view === 'dashboard') {
-        // keep user in app: ignore back to avoid app close
         return true;
       }
 
@@ -111,6 +103,20 @@ export default function App() {
     const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
     return () => subscription.remove();
   }, [view]);
+
+  // ✅ FIXED SEARCH HANDLER
+  const handleSearch = () => {
+    if (loading) return;
+
+    const query = searchQuery.trim();
+
+    if (!query) {
+      loadMeals('');
+      return;
+    }
+
+    loadMeals(query);
+  };
 
   const openMealDetail = async (meal: Meal) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -151,11 +157,11 @@ export default function App() {
   };
 
   const onRefresh = async () => {
+    if (loading || refreshing) return;
     setRefreshing(true);
     await loadMeals(searchQuery);
   };
 
-  // Keep categories in Dashboard consistent by using full meal set. Detailed filtering is handled in Dashboard.
   const mealsIncludingFavoriteCache = showFavoritesOnly
     ? [...meals, ...allMealsCache.filter((meal) => favorites.includes(meal.idMeal) && !meals.some((m) => m.idMeal === meal.idMeal))]
     : meals;
@@ -208,7 +214,7 @@ export default function App() {
       sortOption={sortOption}
       showFavoritesOnly={showFavoritesOnly}
       onSearchQueryChange={setSearchQuery}
-      onHandleSearch={() => loadMeals(searchQuery)}
+      onHandleSearch={handleSearch} // ✅ FIXED
       onRefresh={onRefresh}
       onToggleFavorite={(idMeal) => setFavorites((prev) => (prev.includes(idMeal) ? prev.filter((id) => id !== idMeal) : [...prev, idMeal]))}
       onSetRating={(idMeal, rating) => setRatings((prev) => ({ ...prev, [idMeal]: rating }))}
@@ -222,7 +228,6 @@ export default function App() {
     />
   );
 }
-
 interface FavoritesScreenProps {
   meals: Meal[];
   favorites: string[];
@@ -251,11 +256,14 @@ function FavoritesScreen({
       contentContainerStyle={styles.dashboardContainer}
     >
       <View style={styles.dashboardHeader}>
-        <TouchableOpacity onPress={onBack} style={styles.searchClearBtn}>
-          <Text style={styles.searchClearText}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.dashboardTitle}>My Favorites</Text>
-      </View>
+  <TouchableOpacity onPress={onBack} style={styles.backButtonFull}>
+    <Text style={styles.backButtonText}>← Back</Text>
+  </TouchableOpacity>
+
+  <Text style={styles.dashboardTitleCentered}>
+    My Favorites
+  </Text>
+</View>
 
       {favoriteMeals.length === 0 ? (
         <View style={styles.noFavoritesContainer}>
@@ -267,9 +275,11 @@ function FavoritesScreen({
       ) : (
         <>
           <View style={styles.favoritesOverview}>
-            <Text style={styles.sectionTitle}>Your Favorites</Text>
-            <Text style={styles.favoriteCountText}>{favoriteMeals.length} saved recipes</Text>
-          </View>
+  <Text style={styles.favoritesTitle}>Your Favorites</Text>
+  <Text style={styles.favoriteCountText}>
+    {favoriteMeals.length} saved recipes
+  </Text>
+</View>
 
           <FlatList
             data={filteredMeals}
