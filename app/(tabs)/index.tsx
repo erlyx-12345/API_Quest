@@ -31,32 +31,22 @@ export default function App() {
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
 
-  const loadMeals = async (query = '') => {
-    if (loading) return;
+const loadMeals = async (query = '', silent = false) => {
+  if (loading && !silent) return;
 
-    setLoading(true);
-    setError(null);
+  if (!silent) setLoading(true); // 🔥 only show loading if NOT silent
+  setError(null);
 
-    try {
-      const fetched = await RecipeService.fetchMeals(query);
-      setMeals(fetched);
-      setAllMealsCache((prev) => {
-        const merged = [...prev];
-        fetched.forEach((meal) => {
-          if (!merged.some((item) => item.idMeal === meal.idMeal)) {
-            merged.push(meal);
-          }
-        });
-        return merged;
-      });
-    } catch (fetchError) {
-      setError('Unable to fetch recipes. Please check your internet connection.');
-      console.error(fetchError);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  try {
+    const fetched = await RecipeService.fetchMeals(query);
+    setMeals(fetched);
+  } catch (error) {
+    setError('Unable to fetch recipes.');
+  } finally {
+    if (!silent) setLoading(false); // 🔥 skip loading UI
+    setRefreshing(false);
+  }
+};
 
   useEffect(() => {
     const prepare = async () => {
@@ -94,6 +84,7 @@ export default function App() {
       }
 
       if (view === 'dashboard') {
+        // keep user in app: ignore back to avoid app close
         return true;
       }
 
@@ -104,19 +95,20 @@ export default function App() {
     return () => subscription.remove();
   }, [view]);
 
-  // ✅ FIXED SEARCH HANDLER
-  const handleSearch = () => {
-    if (loading) return;
 
-    const query = searchQuery.trim();
+  
+  const handleSearch = (queryOverride?: string) => {
+  if (loading) return;
 
-    if (!query) {
-      loadMeals('');
-      return;
-    }
+  const query = (queryOverride ?? searchQuery).trim();
 
-    loadMeals(query);
-  };
+  if (!query) {
+    loadMeals(''); // 🔥 reset to ALL meals
+    return;
+  }
+
+  loadMeals(query);
+};
 
   const openMealDetail = async (meal: Meal) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -162,6 +154,8 @@ export default function App() {
     await loadMeals(searchQuery);
   };
 
+
+  // Keep categories in Dashboard consistent by using full meal set. Detailed filtering is handled in Dashboard.
   const mealsIncludingFavoriteCache = showFavoritesOnly
     ? [...meals, ...allMealsCache.filter((meal) => favorites.includes(meal.idMeal) && !meals.some((m) => m.idMeal === meal.idMeal))]
     : meals;
@@ -214,8 +208,8 @@ export default function App() {
       sortOption={sortOption}
       showFavoritesOnly={showFavoritesOnly}
       onSearchQueryChange={setSearchQuery}
-      onHandleSearch={handleSearch} // ✅ FIXED
-      onRefresh={onRefresh}
+ onHandleSearch={handleSearch} 
+       onRefresh={onRefresh}
       onToggleFavorite={(idMeal) => setFavorites((prev) => (prev.includes(idMeal) ? prev.filter((id) => id !== idMeal) : [...prev, idMeal]))}
       onSetRating={(idMeal, rating) => setRatings((prev) => ({ ...prev, [idMeal]: rating }))}
       onOpenMealDetail={openMealDetail}
@@ -228,6 +222,7 @@ export default function App() {
     />
   );
 }
+
 interface FavoritesScreenProps {
   meals: Meal[];
   favorites: string[];

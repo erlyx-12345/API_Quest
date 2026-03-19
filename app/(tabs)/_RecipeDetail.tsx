@@ -21,8 +21,8 @@ export const RecipeDetail = ({ selectedMeal, onClose, onShare, currentStep, setC
       <ScrollView contentContainerStyle={styles.detailContainer}>
         <View style={styles.detailHeader}>
           <TouchableOpacity onPress={onClose} style={styles.backBtn}>
-            <Text style={styles.backBtnText}>← Back</Text>
-          </TouchableOpacity>
+            <Text style={styles.backArrow}>← </Text>
+                      </TouchableOpacity>
           <Text style={styles.detailTitle} numberOfLines={3} ellipsizeMode="tail">{selectedMeal.strMeal}</Text>
         </View>
 

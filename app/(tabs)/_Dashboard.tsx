@@ -1,3 +1,4 @@
+import { SafeAreaView } from 'react-native';
 import React from 'react';
 import {
   View,
@@ -26,7 +27,7 @@ interface DashboardProps {
   sortOption: 'name' | 'rating';
   showFavoritesOnly: boolean;
   onSearchQueryChange: (value: string) => void;
-  onHandleSearch: () => void;
+onHandleSearch: (query?: string) => void;
   onRefresh: () => void;
   onToggleFavorite: (idMeal: string) => void;
   onSetRating: (idMeal: string, rating: number) => void;
@@ -118,14 +119,18 @@ export default function Dashboard({
   const justForYouMeals = filteredMeals.slice(0, 3);
   const allCategoryMeals = filteredMeals;
 
-  if (loading) {
-    return (
+ if (loading) {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.centeredLoader}>
         <ActivityIndicator size="large" color={colors.orange} />
-        <Text style={styles.centeredLoaderText}>Refreshing recipes...</Text>
+        <Text style={styles.centeredLoaderText}>
+          Refreshing
+        </Text>
       </View>
-    );
-  }
+    </SafeAreaView>
+  );
+}
 
   return (
     <ScrollView
@@ -167,25 +172,29 @@ export default function Dashboard({
             value={searchQuery}
             onChangeText={onSearchQueryChange}
             returnKeyType="search"
-            onSubmitEditing={onHandleSearch}
+            onSubmitEditing={() => onHandleSearch()}            
             underlineColorAndroid="transparent"  
           />
 
           {searchQuery.length > 0 && (
-            <TouchableOpacity
-              style={styles.searchClearBtn}
-              onPress={() => onSearchQueryChange('')}
-            >
-              <Text style={styles.searchClearText}>×</Text>
-            </TouchableOpacity>
-          )}
+  <TouchableOpacity
+    style={styles.searchClearBtn}
+    onPress={() => {
+      onSearchQueryChange('');
+      onSetCategoryFilter('All');
+      onHandleSearch(''); // 🔥 THIS IS THE KEY FIX
+    }}
+  >
+    <Text style={styles.searchClearText}>×</Text>
+  </TouchableOpacity>
+)}
 
-          <TouchableOpacity
-            style={styles.searchBtn}
-            onPress={onHandleSearch}
-          >
-            <Text style={styles.searchBtnText}>Go</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+  style={styles.searchBtn}
+  onPress={() => onHandleSearch()}
+>
+  <Text style={styles.searchBtnText}>Go</Text>
+</TouchableOpacity>
         </View>
 
         <TouchableOpacity

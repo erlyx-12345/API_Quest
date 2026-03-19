@@ -38,8 +38,18 @@ export const styles = StyleSheet.create({
   searchBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
   sectionTitle: { fontSize: 20, fontWeight: '700', marginBottom: 2 },
   sectionSubtitle: { color: '#666', fontSize: 14, marginTop: 2, marginBottom: 10 },
-  centeredLoader: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  centeredLoaderText: { marginTop: 10, color: '#666' },
+centeredLoader: {
+  flex: 1,
+  width: '100%',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+centeredLoaderText: {
+  marginTop: 10,
+  color: '#ffffff',
+  textAlign: 'center',
+  width: '100%', 
+},
 searchRow: {
   flexDirection: 'row',
   alignItems: 'center',
@@ -63,10 +73,22 @@ searchSection: {
 searchInput: {
   flex: 1,
   fontSize: 15,
- // color: '#222',
+  color: '#222',
   borderWidth: 0,
-},  refreshingBanner: { width: '100%', backgroundColor: '#FFF4E6', paddingVertical: 6, borderRadius: 12, marginBottom: 10, borderWidth: 1, borderColor: '#F2C49A', alignItems: 'center' },
-  refreshingBannerText: { color: '#5d4a35', fontSize: 13, fontWeight: '600' },
+},  
+refreshingBanner: {
+  width: '100%',
+  marginHorizontal: -20, // fix: cancels parent padding
+  paddingHorizontal: 20, // keeps inner spacing clean
+  backgroundColor: '#FFF4E6',
+  paddingVertical: 6,
+  borderRadius: 12,
+  marginBottom: 10,
+  borderWidth: 1,
+  borderColor: '#F2C49A',
+  alignItems: 'center',
+  justifyContent: 'center',
+},  refreshingBannerText: { color: '#ffffff', fontSize: 13, fontWeight: '600' },
   noFavoritesContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
   noFavoritesMessage: { alignItems: 'center' },
   noFoodContainerCentered: { justifyContent: 'center', alignItems: 'center' },
@@ -107,7 +129,7 @@ favoritesOverview: {
   categoryChipTextActive: { color: '#fff' },
   justForYouRow: { flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', marginBottom: 12 },
   justForYouScroll: { paddingBottom: 10 },
-  justForYouScrollContent: { paddingLeft: 10, paddingRight: 10 },
+  justForYouScrollContent: { paddingRight: 10 },
   smallCard: { width: 260, height: 235, borderRadius: 14, overflow: 'hidden', backgroundColor: '#111', elevation: 14, borderWidth: 1, borderColor: '#000', shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.35, shadowRadius: 14, marginBottom: 14, marginRight: 14 },
   smallCardImage: { width: '100%', height: 140, resizeMode: 'cover' },
   smallCardTextArea: { paddingHorizontal: 12, paddingTop: 10, paddingBottom: 10, backgroundColor: '#111', minHeight: 90, justifyContent: 'space-between' },
@@ -198,10 +220,18 @@ backBtn: {
   backgroundColor: '#222',
 },
 
-backBtnText: {
+
+
+backArrow: {
+  fontSize: 26, // 🔥 BIG arrow
   color: '#fff',
-  fontSize: 16,
+  marginRight: 4,
+  width: 50, // keeps touch area generous
+  height: 30, // keeps touch area generous
+  lineHeight: 30, // vertically center the arrow
+
 },
+
   backButton: {
   flexDirection: 'row',
   alignItems: 'center',
